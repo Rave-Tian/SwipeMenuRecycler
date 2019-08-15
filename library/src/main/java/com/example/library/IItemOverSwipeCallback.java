@@ -3,15 +3,10 @@ package com.example.library;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * Created by tianrenzheng.
+ * 当RecycleView Item发生两阶拉动的时候的回调
  */
-
 public interface IItemOverSwipeCallback {
 
-    /**
-     * 两阶拉动，响应过度拉动的事件
-     * @param holder
-     */
     void onItemOverScrollSwiped(RecyclerView.ViewHolder holder);
 
 }

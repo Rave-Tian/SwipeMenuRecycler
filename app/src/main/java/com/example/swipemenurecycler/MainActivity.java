@@ -17,12 +17,12 @@ import com.airbnb.lottie.LottieProperty;
 import com.airbnb.lottie.model.KeyPath;
 import com.airbnb.lottie.value.LottieFrameInfo;
 import com.airbnb.lottie.value.LottieValueCallback;
-import com.example.library.ISwipeMenuItemClickListener;
-import com.example.library.ISwipeMenuItemCreator;
+import com.example.library.IMenuItemClickListener;
+import com.example.library.IMenuItemCreator;
 import com.example.library.ItemTouchHelper;
 import com.example.library.ItemTouchHelperCallback;
-import com.example.library.view.SwipeMenuItem;
-import com.example.library.view.SwipeMenuItemView;
+import com.example.library.view.MenuItemHolder;
+import com.example.library.view.MenuItemView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,30 +38,30 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recyler = findViewById(R.id.recycler);
         ArrayList<String> list = initList();
-        adapter = new DemoRecyclerAdapter(list, new ISwipeMenuItemCreator() {
+        adapter = new DemoRecyclerAdapter(list, new IMenuItemCreator() {
             @Override
-            public void onCreateMenu(List<SwipeMenuItem> leftMenu, List<SwipeMenuItem> rightMenu, int viewType) {
-                rightMenu.add(new SwipeMenuItem.Builder()
+            public void onCreateMenu(List<MenuItemHolder> leftMenu, List<MenuItemHolder> rightMenu, int viewType) {
+                rightMenu.add(new MenuItemHolder.Builder()
                         .setText("pin")
                         .setLottieFileName("cell_right_pin.json")
                         .setBackgroundColor(Color.parseColor("#61BC79"))
-                        .setClickListener(new ISwipeMenuItemClickListener() {
+                        .setClickListener(new IMenuItemClickListener() {
                             @Override
                             public void onClick(View v, int pos) {
-                                adapter.moveItem(pos, 0);
+                                adapter.moveItem(pos, 1);
                             }
                         }).build());
-                rightMenu.add(new SwipeMenuItem.Builder()
+                rightMenu.add(new MenuItemHolder.Builder()
                         .setText("mute")
                         .setLottieFileName("cell_right_mute.json")
                         .setBackgroundColor(Color.parseColor("#FFBB52"))
-                        .setClickListener(new ISwipeMenuItemClickListener() {
+                        .setClickListener(new IMenuItemClickListener() {
                             @Override
                             public void onClick(View v, int pos) {
 
                             }
                         })
-                        .setInitLottieValueCallback(new SwipeMenuItemView.IInitLottieValueCallback() {
+                        .setInitLottieValueCallback(new MenuItemView.IInitLottieValueCallback() {
                             @Override
                             public void initValueCallback(LottieAnimationView lottieAnimationView) {
                                 KeyPath path1 = new KeyPath("background-change", "路径", "填充 1");
@@ -91,22 +91,22 @@ public class MainActivity extends AppCompatActivity {
                         })
                         .build());
                 String menuTitle = viewType == 0 ? "Mute" : "Unmute";
-                rightMenu.add(new SwipeMenuItem.Builder()
+                rightMenu.add(new MenuItemHolder.Builder()
                         .setText(menuTitle)
                         .setLottieFileName("cell_right_delete.json")
                         .setBackgroundColor(Color.parseColor("#FF5454"))
-                        .setClickListener(new ISwipeMenuItemClickListener() {
+                        .setClickListener(new IMenuItemClickListener() {
                             @Override
                             public void onClick(View v, int pos) {
                                 adapter.removeItem(pos);
                             }
                         }).build());
 
-                leftMenu.add(new SwipeMenuItem.Builder()
+                leftMenu.add(new MenuItemHolder.Builder()
                         .setText("Unread")
                         .setLottieFileName("cell_left_unRead.json")
                         .setBackgroundColor(Color.parseColor("#FF5454"))
-                        .setClickListener(new ISwipeMenuItemClickListener() {
+                        .setClickListener(new IMenuItemClickListener() {
                             @Override
                             public void onClick(View v, int pos) {
                                 Toast.makeText(MainActivity.this, "unread clicked", Toast.LENGTH_SHORT).show();

@@ -11,28 +11,28 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 
 
-import com.example.library.ISwipeMenuAnimationSync;
+import com.example.library.IMenuAnimationSync;
 import com.example.library.ItemTouchHelper;
 import com.example.library.tools.UITools;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SwipeMenuView extends FrameLayout implements ISwipeMenuAnimationSync {
+public class RecyclerItemSwipeWrapperView extends FrameLayout implements IMenuAnimationSync {
 
     private FrameLayout contentLayout;
     private FrameLayout rightMenuLayout;
     private FrameLayout leftMenuLayout;
 
-    private List<SwipeMenuItemView> rightSwipeMenuItems;
-    private List<SwipeMenuItemView> leftSwipeMenuItems;
+    private List<MenuItemView> rightSwipeMenuItems;
+    private List<MenuItemView> leftSwipeMenuItems;
     private int height;
     private volatile int currentDx = 0;
     private float floatCurDx = 0f;
     private OverSwipeAnimation overSwipeAnimation;
     private boolean isOverScrolled = false;
 
-    public SwipeMenuView(@NonNull Context context) {
+    public RecyclerItemSwipeWrapperView(@NonNull Context context) {
         super(context);
         initView(context);
         this.overSwipeAnimation = new OverSwipeAnimation();
@@ -58,7 +58,7 @@ public class SwipeMenuView extends FrameLayout implements ISwipeMenuAnimationSyn
         leftSwipeMenuItems = new ArrayList<>();
     }
 
-    public void setHeight(int height){
+    public void setHeight(int height) {
         this.height = height;
     }
 
@@ -69,16 +69,16 @@ public class SwipeMenuView extends FrameLayout implements ISwipeMenuAnimationSyn
     }
 
     public View getOriginItemView() {
-        if(contentLayout.getChildCount() > 0) {
+        if (contentLayout.getChildCount() > 0) {
             return this.contentLayout.getChildAt(0);
         }
         return null;
     }
 
-    public void setLeftMenuLayout(final List<SwipeMenuItem> leftMenuItems) {
+    public void setLeftMenuLayout(final List<MenuItemHolder> leftMenuItems) {
         this.leftSwipeMenuItems.clear();
         for (int i = 0; i < leftMenuItems.size(); i++) {
-            SwipeMenuItemView temp = new SwipeMenuItemView(getContext());
+            MenuItemView temp = new MenuItemView(getContext());
             temp.setText(leftMenuItems.get(i).getText());
             temp.setAnimation(leftMenuItems.get(i).getLottieFileName());
             temp.setBackgroundColor(leftMenuItems.get(i).getBackgroundColor());
@@ -96,10 +96,10 @@ public class SwipeMenuView extends FrameLayout implements ISwipeMenuAnimationSyn
         }
     }
 
-    public void setRightMenuLayout(final List<SwipeMenuItem> rightMenuItems) {
+    public void setRightMenuLayout(final List<MenuItemHolder> rightMenuItems) {
         this.rightSwipeMenuItems.clear();
         for (int i = 0; i < rightMenuItems.size(); i++) {
-            SwipeMenuItemView temp = new SwipeMenuItemView(getContext());
+            MenuItemView temp = new MenuItemView(getContext());
             temp.setText(rightMenuItems.get(i).getText());
             temp.setAnimation(rightMenuItems.get(i).getLottieFileName());
             temp.setBackgroundColor(rightMenuItems.get(i).getBackgroundColor());
@@ -118,11 +118,11 @@ public class SwipeMenuView extends FrameLayout implements ISwipeMenuAnimationSyn
         }
     }
 
-    public int getLeftMenuWidth(){
+    public int getLeftMenuWidth() {
         return height * leftSwipeMenuItems.size();
     }
 
-    public int getRightMenuWidth(){
+    public int getRightMenuWidth() {
         return height * rightSwipeMenuItems.size();
     }
 
@@ -173,7 +173,7 @@ public class SwipeMenuView extends FrameLayout implements ISwipeMenuAnimationSyn
                 }
 
                 leftMenuLayout.getLayoutParams().width = Math.abs(currentDx);
-                if(leftSwipeMenuItems.size() > 0){
+                if (leftSwipeMenuItems.size() > 0) {
                     int subItemWidth = Math.abs(currentDx) / leftSwipeMenuItems.size();
                     leftMenuLayout.getChildAt(0).getLayoutParams().width = subItemWidth;
                 }
@@ -380,7 +380,7 @@ public class SwipeMenuView extends FrameLayout implements ISwipeMenuAnimationSyn
                 this.endWidth = endWidth;
                 this.dx = endWidth - startWidth;
 
-                float animatorRate = (float) Math.abs(dx) / (float) SwipeMenuView.this.getMeasuredWidth();
+                float animatorRate = (float) Math.abs(dx) / (float) RecyclerItemSwipeWrapperView.this.getMeasuredWidth();
                 long duration = (long) (animatorRate * FULL_ANIMATION_DURATION);
                 animator.setDuration(duration);
                 animator.setDuration(FULL_ANIMATION_DURATION);

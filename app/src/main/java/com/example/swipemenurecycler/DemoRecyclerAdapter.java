@@ -9,21 +9,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.library.IItemOverSwipeCallback;
-import com.example.library.ISwipeMenuItemCreator;
+import com.example.library.IMenuItemCreator;
 import com.example.library.tools.UITools;
-import com.example.library.view.SwipeMenuItem;
-import com.example.library.view.SwipeMenuView;
+import com.example.library.view.MenuItemHolder;
+import com.example.library.view.RecyclerItemSwipeWrapperView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DemoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements IItemOverSwipeCallback {
 
     private int counter = 1;
     private ArrayList<String> mData;
-    private ISwipeMenuItemCreator mSwipeMenuItemCreator;
+    private IMenuItemCreator mSwipeMenuItemCreator;
 
-    public DemoRecyclerAdapter(ArrayList<String> data, ISwipeMenuItemCreator swipeMenuItemCreator) {
+    public DemoRecyclerAdapter(ArrayList<String> data, IMenuItemCreator swipeMenuItemCreator) {
         this.mData = data;
         this.mSwipeMenuItemCreator = swipeMenuItemCreator;
     }
@@ -41,20 +40,20 @@ public class DemoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         contentView.setText("test");
 
         if (mSwipeMenuItemCreator != null) {
-            SwipeMenuView swipeMenuView = new SwipeMenuView(parent.getContext());
-            swipeMenuView.setHeight(getItemHeight());
-            swipeMenuView.setContentLayout(contentView);
-            ArrayList<SwipeMenuItem> leftMenuItems = new ArrayList<>();
-            ArrayList<SwipeMenuItem> rightMenuItems = new ArrayList<>();
+            RecyclerItemSwipeWrapperView recyclerItemSwipeWrapperView = new RecyclerItemSwipeWrapperView(parent.getContext());
+            recyclerItemSwipeWrapperView.setHeight(getItemHeight());
+            recyclerItemSwipeWrapperView.setContentLayout(contentView);
+            ArrayList<MenuItemHolder> leftMenuItems = new ArrayList<>();
+            ArrayList<MenuItemHolder> rightMenuItems = new ArrayList<>();
             mSwipeMenuItemCreator.onCreateMenu(leftMenuItems, rightMenuItems, viewType);
             if (leftMenuItems != null && leftMenuItems.size() > 0) {
-                swipeMenuView.setLeftMenuLayout(leftMenuItems);
+                recyclerItemSwipeWrapperView.setLeftMenuLayout(leftMenuItems);
             }
             if (rightMenuItems != null && rightMenuItems.size() > 0) {
-                swipeMenuView.setRightMenuLayout(rightMenuItems);
+                recyclerItemSwipeWrapperView.setRightMenuLayout(rightMenuItems);
             }
 
-            return new DemoHolder(swipeMenuView);
+            return new DemoHolder(recyclerItemSwipeWrapperView);
 
         } else {
             return new DemoHolder(contentView);
@@ -71,7 +70,7 @@ public class DemoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             TextView textView = (TextView) holder.itemView;
             textView.setText(mData.get(position));
         } else {
-            View originItemView = ((SwipeMenuView) holder.itemView).getOriginItemView();
+            View originItemView = ((RecyclerItemSwipeWrapperView) holder.itemView).getOriginItemView();
             if (originItemView != null) {
                 ((TextView) originItemView).setText(mData.get(position));
             }

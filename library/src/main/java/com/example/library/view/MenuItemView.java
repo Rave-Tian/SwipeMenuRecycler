@@ -15,7 +15,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.example.library.IBaseSwipeMenuItemClickProcessor;
 import com.example.library.tools.UITools;
 
-public class SwipeMenuItemView extends FrameLayout implements IBaseSwipeMenuItemClickProcessor {
+public class MenuItemView extends FrameLayout implements IBaseSwipeMenuItemClickProcessor {
 
     public interface IInitLottieValueCallback {
         void initValueCallback(LottieAnimationView lottieAnimationView);
@@ -26,7 +26,7 @@ public class SwipeMenuItemView extends FrameLayout implements IBaseSwipeMenuItem
     private IInitLottieValueCallback initLottieValueCallback;
     private boolean animationPlayingFlag = false;
 
-    public SwipeMenuItemView(@NonNull Context context) {
+    public MenuItemView(@NonNull Context context) {
         super(context);
         initView(context);
     }

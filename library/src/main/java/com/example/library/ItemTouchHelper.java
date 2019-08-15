@@ -46,7 +46,7 @@ import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 
-import com.example.library.view.SwipeMenuView;
+import com.example.library.view.RecyclerItemSwipeWrapperView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -681,9 +681,9 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
             final ViewHolder prevSelected = mSelected;
             if (prevSelected.itemView.getParent() != null) {
                 final int swipeDir;
-                if(isClick && currentExtendState != EXTEND_STATE_IDLE){
+                if (isClick && currentExtendState != EXTEND_STATE_IDLE) {
                     swipeDir = 0;
-                }else {
+                } else {
                     swipeDir = prevActionState == ACTION_STATE_DRAG ? 0
                             : swipeIfNecessary(prevSelected);
                 }
@@ -694,11 +694,11 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
                 switch (swipeDir) {
                     case LEFT:
                         targetTranslateY = 0;
-                        targetTranslateX = Math.signum(mDx) * ((SwipeMenuView)mSelected.itemView).getRightMenuWidth();
+                        targetTranslateX = Math.signum(mDx) * ((RecyclerItemSwipeWrapperView) mSelected.itemView).getRightMenuWidth();
                         break;
                     case RIGHT:
                         targetTranslateY = 0;
-                        targetTranslateX = Math.signum(mDx) * ((SwipeMenuView)mSelected.itemView).getLeftMenuWidth();
+                        targetTranslateX = Math.signum(mDx) * ((RecyclerItemSwipeWrapperView) mSelected.itemView).getLeftMenuWidth();
                         break;
                     case OVER_SCROLL_LEFT:
                         targetTranslateY = 0;
@@ -711,11 +711,11 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
                         break;
                     case START:
                         targetTranslateY = 0;
-                        targetTranslateX = Math.signum(mDx) * ((SwipeMenuView)mSelected.itemView).getRightMenuWidth();
+                        targetTranslateX = Math.signum(mDx) * ((RecyclerItemSwipeWrapperView) mSelected.itemView).getRightMenuWidth();
                         break;
                     case END:
                         targetTranslateY = 0;
-                        targetTranslateX = Math.signum(mDx) * ((SwipeMenuView)mSelected.itemView).getLeftMenuWidth();
+                        targetTranslateX = Math.signum(mDx) * ((RecyclerItemSwipeWrapperView) mSelected.itemView).getLeftMenuWidth();
                         break;
                     case UP:
                     case DOWN:
@@ -819,10 +819,10 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
                     // animations. Instead, we wait and batch.
                     if ((animator != null && animator.isRunning(null))
                             || hasRunningRecoverAnim()
-                            || (anim.mViewHolder.itemView instanceof ISwipeMenuAnimationSync && ((ISwipeMenuAnimationSync) anim.mViewHolder.itemView).isAnimationRunning())
+                            || (anim.mViewHolder.itemView instanceof IMenuAnimationSync && ((IMenuAnimationSync) anim.mViewHolder.itemView).isAnimationRunning())
                     ) {
                         mRecyclerView.post(this);
-                    }else {
+                    } else {
                         mCallback.onSwiped(anim.mViewHolder, swipeDir);
                     }
                 }
@@ -838,16 +838,16 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
             public void run() {
                 if (mRecyclerView != null && mRecyclerView.isAttachedToWindow()
                         && viewHolder.getAdapterPosition() != RecyclerView.NO_POSITION
-                        && (!(viewHolder.itemView instanceof ISwipeMenuAnimationSync) || !((ISwipeMenuAnimationSync) viewHolder.itemView).isAnimationRunning())) {
+                        && (!(viewHolder.itemView instanceof IMenuAnimationSync) || !((IMenuAnimationSync) viewHolder.itemView).isAnimationRunning())) {
 
                     final RecyclerView.ItemAnimator animator = mRecyclerView.getItemAnimator();
-                    if((animator == null || !animator.isRunning(null))
-                            && !hasRunningRecoverAnim()){
-                        if(view != null && view.isClickable()){
-                            view.setTag(ItemTouchHelper.MENU_CLICKED_ITEM_TAG,viewHolder.getAdapterPosition());
+                    if ((animator == null || !animator.isRunning(null))
+                            && !hasRunningRecoverAnim()) {
+                        if (view != null && view.isClickable()) {
+                            view.setTag(ItemTouchHelper.MENU_CLICKED_ITEM_TAG, viewHolder.getAdapterPosition());
                             view.performClick();
                         }
-                    }else {
+                    } else {
                         mRecyclerView.post(this);
                     }
                 }
@@ -856,18 +856,18 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
     }
 
     View findClickedMenuItem(View view, float x, float y) {
-        if (hitTest(view, x, y, view.getLeft()+view.getTranslationX(), view.getTop() + view.getTranslationY())) {
-            if(view instanceof ViewGroup && !(view instanceof IBaseSwipeMenuItemClickProcessor)){
+        if (hitTest(view, x, y, view.getLeft() + view.getTranslationX(), view.getTop() + view.getTranslationY())) {
+            if (view instanceof ViewGroup && !(view instanceof IBaseSwipeMenuItemClickProcessor)) {
                 View subView = null;
                 for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
                     View curView = ((ViewGroup) view).getChildAt(i);
                     subView = findClickedMenuItem(curView, x - view.getLeft(), y - view.getTop());
-                    if(subView != null)
+                    if (subView != null)
                         break;
                 }
                 return subView;
-            }else {
-                if(view instanceof IBaseSwipeMenuItemClickProcessor) {
+            } else {
+                if (view instanceof IBaseSwipeMenuItemClickProcessor) {
                     return view;
                 }
             }
@@ -1206,7 +1206,7 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
 
         RecoverAnimation animation = findAnimation(mPreOpened.itemView);
         // TODO preOpenedItem 为正在滑动删除的条目
-        if(animation == null ){
+        if (animation == null) {
             return false;
         }
 
@@ -1354,7 +1354,7 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
         }
         for (int i = mRecoverAnimations.size() - 1; i >= 0; i--) {
             final RecoverAnimation anim = mRecoverAnimations.get(i);
-            if(anim.mViewHolder.itemView == target){
+            if (anim.mViewHolder.itemView == target) {
                 return anim;
             }
         }
@@ -1383,9 +1383,9 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
         }
 
         // 通过手势move的距离来判断是不是点击操作（这里的点击只处理菜单项的点击，RecyclerView的Item的点击事件onInterceptTouchEvent的时候就已经抛出给RecyclerView处理了）
-        if (Math.abs(x - mInitialTouchXInScreen) >= mSlop || Math.abs(y -mInitialTouchYInScreen) >= mSlop) {
+        if (Math.abs(x - mInitialTouchXInScreen) >= mSlop || Math.abs(y - mInitialTouchYInScreen) >= mSlop) {
             isClick = false;
-        }else {
+        } else {
             isClick = true;
         }
     }
@@ -1450,7 +1450,7 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
                         && absXVelocity >= mCallback.getSwipeEscapeVelocity(mSwipeEscapeVelocity)
                         && absXVelocity > Math.abs(yVelocity)) {
                     // 达到逃逸速率(快速手势时，不考虑滑动距离，直接响应)
-                    if(Math.abs(mDx) >= mCallback.getOverSwipeThresholdWidth(mRecyclerView.getWidth())){
+                    if (Math.abs(mDx) >= mCallback.getOverSwipeThresholdWidth(mRecyclerView.getWidth())) {
                         return velDirFlag << 4;
                     }
                     return velDirFlag;
@@ -1463,29 +1463,29 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
             if (currentExtendState == EXTEND_STATE_IDLE) {
                 // 从没有菜单的状态开始的手势
                 if ((flags & dirFlag) != 0 && Math.abs(mDx) > threshold) {
-                    if(Math.abs(mDx) >= mCallback.getOverSwipeThresholdWidth(mRecyclerView.getWidth())){
+                    if (Math.abs(mDx) >= mCallback.getOverSwipeThresholdWidth(mRecyclerView.getWidth())) {
                         // 大于OverScroll边界值，返回状态为OverScroll
                         return dirFlag << 4;
                     }
                     return dirFlag;
                 }
             } else if (currentExtendState == EXTEND_STATE_RIGHT) {
-                if((flags & dirFlag) == 0 || (mDx - mLastOperateFinishX) > threshold){
+                if ((flags & dirFlag) == 0 || (mDx - mLastOperateFinishX) > threshold) {
                     // 当前状态为右侧菜单展开的状态，并且为向右滑动时，关闭菜单
                     return 0;
-                }else {
+                } else {
                     // 当前状态为右侧菜单展开的状态，并且为向左滑动时,判断是不是OverScroll
-                    if(Math.abs(mDx) >= mCallback.getOverSwipeThresholdWidth(mRecyclerView.getWidth())){
+                    if (Math.abs(mDx) >= mCallback.getOverSwipeThresholdWidth(mRecyclerView.getWidth())) {
                         return dirFlag << 4;
                     }
                     return dirFlag;
                 }
-            } else if (currentExtendState == EXTEND_STATE_LEFT){
-                if((flags & dirFlag) == 0 || (mLastOperateFinishX - mDx) > threshold){
+            } else if (currentExtendState == EXTEND_STATE_LEFT) {
+                if ((flags & dirFlag) == 0 || (mLastOperateFinishX - mDx) > threshold) {
                     // 当前状态为左侧菜单展开的状态，并且为向左侧滑动时，关闭菜单
                     return 0;
-                }else {
-                    if(Math.abs(mDx) >= mCallback.getOverSwipeThresholdWidth(mRecyclerView.getWidth())){
+                } else {
+                    if (Math.abs(mDx) >= mCallback.getOverSwipeThresholdWidth(mRecyclerView.getWidth())) {
                         return dirFlag << 4;
                     }
                     return dirFlag;
@@ -2323,7 +2323,7 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
                     actionState, isCurrentlyActive);
         }
 
-        public void onRecoveryPreOpen(@NonNull RecyclerView recyclerView, @NonNull ViewHolder viewHolder, float dX){
+        public void onRecoveryPreOpen(@NonNull RecyclerView recyclerView, @NonNull ViewHolder viewHolder, float dX) {
 
         }
 
@@ -2585,7 +2585,7 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
 
-//        @Override
+        //        @Override
 //        public boolean onSingleTapConfirmed(MotionEvent e) {
 //            closePreOpenedItem();
 //            return super.onSingleTapConfirmed(e);
@@ -2598,7 +2598,7 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
 
             if (currentExtendState != EXTEND_STATE_IDLE) {
                 ViewHolder viewHolder = findSwipedView(e);
-                if(viewHolder == mPreOpened) {
+                if (viewHolder == mPreOpened) {
                     postDispatchMenuItemClick(viewHolder, e);
                 }
             }
@@ -2681,7 +2681,8 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
 //            }
             mEnded = true;
 //            mPreOpened = null;
-            if (mPreOpenedViewHolder != null) mCallback.clearView(mRecyclerView, mPreOpenedViewHolder);
+            if (mPreOpenedViewHolder != null)
+                mCallback.clearView(mRecyclerView, mPreOpenedViewHolder);
         }
 
         @Override
@@ -2694,7 +2695,7 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
 
         }
 
-        public void start(){
+        public void start() {
             mValueAnimator.start();
         }
 
@@ -2762,7 +2763,7 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
             mValueAnimator.setDuration(duration);
         }
 
-        public void setInterpolator(TimeInterpolator interpolator){
+        public void setInterpolator(TimeInterpolator interpolator) {
             mValueAnimator.setInterpolator(interpolator);
         }
 
