@@ -51,8 +51,9 @@ public class MainActivity extends AppCompatActivity {
                                 adapter.moveItem(pos, 1);
                             }
                         }).build());
+                String menuTitle = viewType == 0 ? "Mute" : "Unmute";
                 rightMenu.add(new MenuItemHolder.Builder()
-                        .setText("mute")
+                        .setText(menuTitle)
                         .setLottieFileName("cell_right_mute.json")
                         .setBackgroundColor(Color.parseColor("#FFBB52"))
                         .setClickListener(new IMenuItemClickListener() {
@@ -90,9 +91,8 @@ public class MainActivity extends AppCompatActivity {
                             }
                         })
                         .build());
-                String menuTitle = viewType == 0 ? "Mute" : "Unmute";
                 rightMenu.add(new MenuItemHolder.Builder()
-                        .setText(menuTitle)
+                        .setText("delete")
                         .setLottieFileName("cell_right_delete.json")
                         .setBackgroundColor(Color.parseColor("#FF5454"))
                         .setClickListener(new IMenuItemClickListener() {

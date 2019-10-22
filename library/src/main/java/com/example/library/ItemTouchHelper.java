@@ -415,7 +415,7 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
                 if (mVelocityTracker != null) {
                     mVelocityTracker.addMovement(event);
                 }
-                return mSelected != null || closePreOpenedItem();
+                return closePreOpenedItem() || mSelected != null;
             } else if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
                 mActivePointerId = ACTIVE_POINTER_ID_NONE;
                 select(null, ACTION_STATE_IDLE);
@@ -1230,7 +1230,7 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
         for (int i = mRecoverAnimations.size() - 1; i >= 0; i--) {
             final RecoverAnimation anim = mRecoverAnimations.get(i);
             final View view = anim.mViewHolder.itemView;
-            if (hitTest(view, x, y, anim.mX, anim.mY)) {
+            if (hitTest(view, x, y, view.getLeft(), view.getTop())) {
                 return view;
             }
         }
